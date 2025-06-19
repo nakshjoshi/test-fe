@@ -25,6 +25,26 @@ if col1.button("▶️ Start"):
     try:
         resp = requests.post(f"{CONTROLLER_API_URL}/start-container")
         st.sidebar.success(resp.json().get("status", "Started ✅"))
+
+        # === WARM-UP POLLING ===
+        def wait_until_backend_ready(timeout=20):
+            start = time.time()
+            while time.time() - start < timeout:
+                try:
+                    res = requests.get(f"{GENAI_API_URL}/")
+                    if res.status_code == 200:
+                        return True
+                except:
+                    pass
+                time.sleep(4)  # retry every 4 seconds
+            return False
+
+        with st.spinner("🌀 Warming up GenAI container... Please wait."):
+            if wait_until_backend_ready():
+                st.sidebar.success("✅ Backend is ready!")
+            else:
+                st.sidebar.warning("⚠️ Backend did not become ready in time.")
+
     except Exception as e:
         st.sidebar.error(f"Error starting: {e}")
 
