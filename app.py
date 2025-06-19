@@ -27,7 +27,7 @@ if col1.button("▶️ Start"):
         st.sidebar.success(resp.json().get("status", "Started ✅"))
 
         # === WARM-UP POLLING ===
-        def wait_until_backend_ready(timeout=20):
+        def wait_until_backend_ready(timeout=36):
             start = time.time()
             while time.time() - start < timeout:
                 try:
